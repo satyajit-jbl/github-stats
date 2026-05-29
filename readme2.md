@@ -15,7 +15,7 @@
 
 </div>
 
-<div align="center">
+<!-- <div align="center">
 
   <img
     src="https://github-stats-nu-self.vercel.app/api/streak"
@@ -23,7 +23,7 @@
     width="100%"
   />
 
-</div>
+</div> -->
 
 <div align="center">
 

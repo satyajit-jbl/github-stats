@@ -1,6 +1,8 @@
 import axios from "axios";
 import {
   THEME,
+  CARD_WIDTH,
+  CARD_HEIGHT,
   langColor,
   escapeXml,
   svgResponse,
@@ -11,7 +13,7 @@ export async function GET(request) {
   try {
     const username = process.env.GITHUB_USERNAME;
     const { searchParams } = new URL(request.url);
-    const count = Math.min(parseInt(searchParams.get("langs_count") || "6", 10), 8);
+    const count = Math.min(parseInt(searchParams.get("langs_count") || "6", 10), 6);
 
     const reposRes = await axios.get(
       `https://api.github.com/users/${username}/repos?per_page=100`,
@@ -47,9 +49,11 @@ export async function GET(request) {
 
     const total = sorted.reduce((acc, [, val]) => acc + val, 0) || 1;
 
-    const barMaxWidth = 260;
-    const rowHeight = 28;
+    const w = CARD_WIDTH;
+    const h = CARD_HEIGHT;
+    const barMaxWidth = 255;
     const startY = 68;
+    const rowHeight = Math.floor((h - startY - 20) / Math.max(count, 1));
 
     const bars = sorted
       .map(([lang, bytes], i) => {
@@ -57,18 +61,17 @@ export async function GET(request) {
         const barWidth = Math.max((pct / 100) * barMaxWidth, 4);
         const y = startY + i * rowHeight;
         const color = langColor(lang);
+        const barH = Math.min(14, rowHeight - 6);
+        const textY = y + rowHeight / 2 + 4;
 
         return `
-          <text x="24" y="${y + 14}" fill="${THEME.text}" font-size="13" font-weight="600" font-family="Segoe UI, system-ui, sans-serif">${escapeXml(lang)}</text>
-          <rect x="130" y="${y + 2}" width="${barMaxWidth}" height="14" rx="7" fill="${THEME.grid}"/>
-          <rect x="130" y="${y + 2}" width="${barWidth}" height="14" rx="7" fill="${color}"/>
-          <text x="${130 + barMaxWidth + 10}" y="${y + 14}" fill="${THEME.muted}" font-size="12" font-family="Segoe UI, system-ui, sans-serif">${pct.toFixed(1)}%</text>
+          <text x="24" y="${textY}" fill="${THEME.text}" font-size="12" font-weight="600" font-family="Segoe UI, system-ui, sans-serif">${escapeXml(lang)}</text>
+          <rect x="125" y="${y + 4}" width="${barMaxWidth}" height="${barH}" rx="6" fill="${THEME.grid}"/>
+          <rect x="125" y="${y + 4}" width="${barWidth}" height="${barH}" rx="6" fill="${color}"/>
+          <text x="${125 + barMaxWidth + 8}" y="${textY}" fill="${THEME.muted}" font-size="11" font-family="Segoe UI, system-ui, sans-serif">${pct.toFixed(1)}%</text>
         `;
       })
       .join("");
-
-    const w = 495;
-    const h = Math.max(195, startY + sorted.length * rowHeight + 24);
 
     const svg = `
     <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">

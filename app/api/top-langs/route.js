@@ -3,11 +3,21 @@ import {
   THEME,
   CARD_WIDTH,
   CARD_HEIGHT,
+  TITLE_SIZE,
+  SUBTITLE_SIZE,
+  TITLE_Y,
+  SUBTITLE_Y,
   langColor,
   escapeXml,
   svgResponse,
   cardBackground,
 } from "../../../lib/svg-theme.js";
+
+/** Show friendly name for languages that confuse readers */
+function displayLangName(lang) {
+  if (lang === "TeX") return "LaTeX";
+  return lang;
+}
 
 export async function GET(request) {
   try {
@@ -51,9 +61,12 @@ export async function GET(request) {
 
     const w = CARD_WIDTH;
     const h = CARD_HEIGHT;
-    const barMaxWidth = 255;
-    const startY = 68;
-    const rowHeight = Math.floor((h - startY - 20) / Math.max(count, 1));
+    const barMaxWidth = 248;
+    const startY = 72;
+    const rowHeight = Math.floor((h - startY - 16) / Math.max(count, 1));
+    const langFontSize = 15;
+    const pctFontSize = 14;
+    const barH = Math.min(16, rowHeight - 8);
 
     const bars = sorted
       .map(([lang, bytes], i) => {
@@ -61,14 +74,14 @@ export async function GET(request) {
         const barWidth = Math.max((pct / 100) * barMaxWidth, 4);
         const y = startY + i * rowHeight;
         const color = langColor(lang);
-        const barH = Math.min(14, rowHeight - 6);
-        const textY = y + rowHeight / 2 + 4;
+        const textY = y + rowHeight / 2 + 5;
+        const label = displayLangName(lang);
 
         return `
-          <text x="24" y="${textY}" fill="${THEME.text}" font-size="12" font-weight="600" font-family="Segoe UI, system-ui, sans-serif">${escapeXml(lang)}</text>
-          <rect x="125" y="${y + 4}" width="${barMaxWidth}" height="${barH}" rx="6" fill="${THEME.grid}"/>
-          <rect x="125" y="${y + 4}" width="${barWidth}" height="${barH}" rx="6" fill="${color}"/>
-          <text x="${125 + barMaxWidth + 8}" y="${textY}" fill="${THEME.muted}" font-size="11" font-family="Segoe UI, system-ui, sans-serif">${pct.toFixed(1)}%</text>
+          <text x="24" y="${textY}" fill="${THEME.text}" font-size="${langFontSize}" font-weight="600" font-family="Segoe UI, system-ui, sans-serif">${escapeXml(label)}</text>
+          <rect x="128" y="${y + 5}" width="${barMaxWidth}" height="${barH}" rx="7" fill="${THEME.grid}"/>
+          <rect x="128" y="${y + 5}" width="${barWidth}" height="${barH}" rx="7" fill="${color}"/>
+          <text x="${128 + barMaxWidth + 10}" y="${textY}" fill="${THEME.muted}" font-size="${pctFontSize}" font-weight="600" font-family="Segoe UI, system-ui, sans-serif">${pct.toFixed(1)}%</text>
         `;
       })
       .join("");
@@ -76,8 +89,8 @@ export async function GET(request) {
     const svg = `
     <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
       ${cardBackground(w, h)}
-      <text x="24" y="38" fill="${THEME.title}" font-size="20" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">Most Used Languages</text>
-      <text x="24" y="56" fill="${THEME.muted}" font-size="12" font-family="Segoe UI, system-ui, sans-serif">By bytes across public repos</text>
+      <text x="24" y="${TITLE_Y}" fill="${THEME.title}" font-size="${TITLE_SIZE}" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">Most Used Languages</text>
+      <text x="24" y="${SUBTITLE_Y}" fill="${THEME.muted}" font-size="${SUBTITLE_SIZE}" font-family="Segoe UI, system-ui, sans-serif">By bytes across public repos</text>
       ${bars}
     </svg>
     `;

@@ -3,6 +3,10 @@ import {
   THEME,
   CARD_WIDTH,
   CARD_HEIGHT,
+  TITLE_SIZE,
+  SUBTITLE_SIZE,
+  TITLE_Y,
+  SUBTITLE_Y,
   escapeXml,
   svgResponse,
   cardBackground,
@@ -38,16 +42,22 @@ export async function GET() {
     const w = CARD_WIDTH;
     const h = CARD_HEIGHT;
 
+    const boxW = 168;
+    const boxH = 36;
+    const colGap = 195;
+    const rowGap = 46;
+    const gridStartY = 72;
+
     const metricCards = metrics
       .map((m, i) => {
         const col = i % 2;
         const row = Math.floor(i / 2);
-        const x = 24 + col * 238;
-        const y = 72 + row * 58;
+        const x = 24 + col * colGap;
+        const y = gridStartY + row * rowGap;
         return `
-          <rect x="${x}" y="${y}" width="218" height="46" rx="10" fill="${THEME.grid}" stroke="${THEME.border}" stroke-width="1"/>
-          <text x="${x + 14}" y="${y + 20}" fill="${THEME.muted}" font-size="11" font-family="Segoe UI, system-ui, sans-serif">${escapeXml(m.label)}</text>
-          <text x="${x + 14}" y="${y + 38}" fill="${THEME.text}" font-size="20" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">${m.value}</text>
+          <rect x="${x}" y="${y}" width="${boxW}" height="${boxH}" rx="8" fill="${THEME.grid}" stroke="${THEME.border}" stroke-width="1"/>
+          <text x="${x + 10}" y="${y + 15}" fill="${THEME.muted}" font-size="10" font-family="Segoe UI, system-ui, sans-serif">${escapeXml(m.label)}</text>
+          <text x="${x + 10}" y="${y + 30}" fill="${THEME.text}" font-size="16" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">${m.value}</text>
         `;
       })
       .join("");
@@ -55,8 +65,8 @@ export async function GET() {
     const svg = `
     <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
       ${cardBackground(w, h)}
-      <text x="24" y="38" fill="${THEME.title}" font-size="20" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">GitHub Overview</text>
-      <text x="24" y="56" fill="${THEME.muted}" font-size="12" font-family="Segoe UI, system-ui, sans-serif">@${escapeXml(username)}</text>
+      <text x="24" y="${TITLE_Y}" fill="${THEME.title}" font-size="${TITLE_SIZE}" font-weight="700" font-family="Segoe UI, system-ui, sans-serif">GitHub Overview</text>
+      <text x="24" y="${SUBTITLE_Y}" fill="${THEME.muted}" font-size="${SUBTITLE_SIZE}" font-family="Segoe UI, system-ui, sans-serif">@${escapeXml(username)}</text>
       ${metricCards}
     </svg>
     `;

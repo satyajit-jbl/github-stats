@@ -1,5 +1,12 @@
 import axios from "axios";
-import { THEME, escapeXml, svgResponse, cardBackground } from "../../../lib/svg-theme.js";
+import {
+  THEME,
+  CARD_WIDTH,
+  CARD_HEIGHT,
+  escapeXml,
+  svgResponse,
+  cardBackground,
+} from "../../../lib/svg-theme.js";
 
 export async function GET() {
   try {
@@ -28,8 +35,8 @@ export async function GET() {
       { label: "Forks", value: totalForks },
     ];
 
-    const w = 495;
-    const h = 195;
+    const w = CARD_WIDTH;
+    const h = CARD_HEIGHT;
 
     const metricCards = metrics
       .map((m, i) => {

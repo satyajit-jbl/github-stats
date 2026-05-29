@@ -1,18 +1,24 @@
 ## 📊 GitHub Stats
 
 <div align="center">
-
-  <img
-    src="https://github-stats-nu-self.vercel.app/api/stats"
-    alt="GitHub Overview"
-    height="195"
-  />
-  <img
-    src="https://github-stats-nu-self.vercel.app/api/top-langs?langs_count=6"
-    alt="Most Used Languages"
-    height="195"
-  />
-
+  <table>
+    <tr>
+      <td valign="top" align="center">
+        <img
+          src="https://github-stats-nu-self.vercel.app/api/stats"
+          alt="GitHub Overview"
+          height="195"
+        />
+      </td>
+      <td valign="top" align="center">
+        <img
+          src="https://github-stats-nu-self.vercel.app/api/top-langs?langs_count=6"
+          alt="Most Used Languages"
+          height="195"
+        />
+      </td>
+    </tr>
+  </table>
 </div>
 
 

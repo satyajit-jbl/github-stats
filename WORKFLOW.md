@@ -220,7 +220,17 @@ git push -u origin feature/update-profile-stats
 Profile uses image URLs pointing at Vercel — deploy **github-stats** first if API URLs or behavior changed.
 
 ---
-
+## Update local main (after you merge the PR)
+```bash
+git checkout main
+git pull origin main
+```
+## Old branches (optional cleanup later)
+Safe to delete on GitHub after their PRs are merged.
+```bash
+git ...
+git ...n
+```
 ## Git push auth (GitHub)
 
 Password login does **not** work. Use either:
